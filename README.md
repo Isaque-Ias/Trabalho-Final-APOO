@@ -6,4 +6,4 @@
 
 ## Objetivo
 
-> Testa as habilidades dos estudantes para resolver o exame de seleção do IFRN através de questões.
+> Trazer uma forma interativa e estimulante que leve estudantes e futuros ingressantes do IFRN a aprender sobre os principais assuntos abordados no exame de seleção necessário para a qualificação do indivíduo a entrar na institução.

@@ -6,11 +6,26 @@ class LoginUI:
         st.header("Entrar")
         email = st.text_input("Informe o e-mail")
         senha = st.text_input("Informe a senha", type="password")
-        if st.button("Entrar"):
-            c = View.cliente_autenticar(email, senha)
-            # a = View.administrador_autenticar(email, senha)
-            if c == None: st.write("E-mail ou senha inválidos")
-            else:
-                st.session_state.usuario_id = c.get_id()
-                st.session_state.screen = "course"
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Entrar"):
+                c = View.autenticar(email, senha)
+                if c == None: st.write("E-mail ou senha inválidos")
+                else:
+                    st.session_state.tutorial = False
+                    st.session_state.usuario_id = c.get_id()
+                    st.session_state.screen = "course"
+                    st.rerun()
+
+        with col2:
+            if st.button("Criar conta"):
+                st.session_state.pop("email", "fail")
+                st.session_state.pop("senha", "fail")
+                st.session_state.pop("nome", "fail")
+                st.session_state.pop("descricao", "fail")
+                st.session_state.pop("matematica", "fail")
+                st.session_state.pop("portugues", "fail")
+                st.session_state.pop("beta", "fail")
+                st.session_state.pop("sign_step", "fail")
+                st.session_state.screen = "signin"
                 st.rerun()

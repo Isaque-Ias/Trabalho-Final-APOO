@@ -20,7 +20,6 @@ class DAO(ABC):
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL UNIQUE,
-                email TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
                 enrolled_math INTEGER NOT NULL,
                 enrolled_pt INTEGER NOT NULL,
@@ -58,7 +57,6 @@ class DAO(ABC):
             CREATE TABLE IF NOT EXISTS admins (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                email TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL
             )
         ''')
@@ -102,6 +100,16 @@ class DAO(ABC):
                 rating INTEGER NOT NULL,
                 FOREIGN KEY (redaction_id) REFERENCES redactions(id),
                 FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS emails (
+                email TEXT NOT NULL UNIQUE,
+                user_id INT,
+                admin_id INT,
+                FOREIGN KEY (user_id) REFERENCES users(id),
+                FOREIGN KEY (admin_id) REFERENCES admins(id)
             )
         ''')
 

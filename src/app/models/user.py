@@ -99,6 +99,17 @@ class UsuarioDAO(DAO):
         return cursor.fetchone()
 
     @classmethod
+    def listar_nome(cls, nome):
+        conn = cls.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT * FROM users WHERE name == ?;
+        """, (nome,))
+        
+        return cursor.fetchone()
+
+    @classmethod
     def salvar(cls, obj):
         conn = cls.get_connection()
         cursor = conn.cursor()

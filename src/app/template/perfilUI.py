@@ -15,8 +15,8 @@ class PerfilUI:
     def main(cls):
         cls.usuario = View.usuario_listar_id(st.session_state.usuario_id)
         opcoes = ["Perfil"]
-        if "tutorial" in st.session_state:
-            st.header("Escolha um dos seus cursos na esquerda!")
+        if "tutorial" in st.session_state and st.session_state.tutorial == True:
+            st.header(f"Olá, {cls.usuario.get_nome()}! Escolha um dos seus cursos nas abas!")
         else:
             opcoes.extend(["Editar Perfil", "Excluir Perfil"])
         if cls.usuario.get_mat():
@@ -43,6 +43,10 @@ class PerfilUI:
         st.text(cls.usuario.get_nome())
         img = Image.open(cls.CWD / "src" / "app" / "images" / "no_profile.png")
         st.image(img, caption="Foto de perfil", width=100)
+        if st.button("Sair da conta", key="perfil-sair"):
+            st.session_state.usuario_id = None
+            st.session_state.screen = "login"
+            st.rerun()
 
     @classmethod
     def mat(cls):

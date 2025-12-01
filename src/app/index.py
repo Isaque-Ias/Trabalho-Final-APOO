@@ -7,16 +7,11 @@ from template.snfUI import ScreenNotFoundUI
 from views import View
 
 class IndexUI:
-    def sidebar():
-        if "usuario_id" not in st.session_state:
-            IndexUI.menu_visitante()
-        else:
-            IndexUI.screens()
+    def state():
+        if "usuario_id" not in st.session_state or st.session_state.usuario_id == None:
+            if "screen" not in st.session_state: st.session_state.screen = "login"
 
-    def menu_visitante():
-        op = st.sidebar.selectbox("Menu", ["Entrar", "Criar conta"])
-        if op == "Entrar": LoginUI.main()
-        if op == "Criar conta": SigninUI.main()
+        IndexUI.screens()
 
     def screens():
         if "screen" in st.session_state:
@@ -24,6 +19,10 @@ class IndexUI:
                 PerfilUI.main()
             elif st.session_state.screen == "course":
                 CourseUI.main()
+            elif st.session_state.screen == "login":
+                LoginUI.main()
+            elif st.session_state.screen == "signin":
+                SigninUI.main()
             else:
                 ScreenNotFoundUI.main()
         else:
@@ -56,7 +55,6 @@ class IndexUI:
     """
     def main():
         View.setup_db()
-        IndexUI.sidebar()
-
+        IndexUI.state()
 
 IndexUI.main()

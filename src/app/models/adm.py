@@ -29,40 +29,17 @@ class Admin:
             self.__senha = senha
             return
         self.__senha = bcrypt.hashpw(senha.encode(), bcrypt.gensalt())
-    def set_mat(self, mat):
-        self.__mat = mat
-    def set_pt(self, pt):
-        self.__pt = pt
-    def set_xp_mat(self, xp_mat):
-        if xp_mat == "": raise ValueError("XP Inválido")
-        self.__xp_mat = xp_mat
-    def set_xp_pt(self, xp_pt):
-        if xp_pt == "": raise ValueError("XP Inválido")
-        self.__xp_pt = xp_pt
-    def set_pic(self, pic):
-        self.__pic = pic
-    def set_pic_mime(self, pic_mime):
-        self.__pic_mime = pic_mime
-    def set_beta(self, beta):
-        self.__beta = beta
     
     def to_sqlite(self):
         values_array = [
             self.get_nome(),
             self.get_email(),
-            self.get_senha(),
-            int(self.get_mat()),
-            int(self.get_pt()),
-            int(self.get_xp_mat()),
-            int(self.get_xp_pt()),
-            self.get_pic(),
-            self.get_pic_mime(),
-            int(self.get_beta())
+            self.get_senha()
         ]
         return values_array
         
-class UsuarioDAO(DAO):
-    table = "users"
+class AdminDAO(DAO):
+    table = "admins"
 
     @classmethod
     def listar_email(cls, email):
@@ -82,7 +59,7 @@ class UsuarioDAO(DAO):
 
         user_data = obj.to_sqlite()
 
-        cursor.execute('INSERT OR IGNORE INTO users (name, email, password, enrolled_math, enrolled_pt, xp_math, xp_pt, profile_pic, profile_pic_mime, is_beta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user_data)
+        cursor.execute('INSERT OR IGNORE INTO users (name, email, password) VALUES (?, ?, ?)', user_data)
 
         conn.commit()
         conn.close()
