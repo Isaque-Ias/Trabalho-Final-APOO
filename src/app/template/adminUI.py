@@ -35,36 +35,41 @@ class AdminUI:
         questoes = View.questoes_listar()
         if len(questoes) == 0: st.write("Nenhuma questão cadastrada")
         else:
-            list_dic = []
+            rows = ""
             for obj in questoes:
-                alts = json.loads(obj.get_alt())
-                
+                base64_string = obj.get_pic()
                 if obj.get_text():
-                    info = obj.get_text()
+                    html_enunciado = obj.get_text()[:30] + "..."
                 else:
-                    blob_bytes = base64.b64decode(obj.get_pic())
-                    pil_img = Image.open(io.BytesIO(blob_bytes))
-                    buf = io.BytesIO()
-                    pil_img.save(buf, format="PNG")
-                    info = buf.getvalue()
+                    html_enunciado = f'<img src="data:image/png;base64,{base64_string}" width="120">'
                 
-                obj_dt = [
-                    info,
-                    [f"{mapping[str(key)]} = {alts[str(key)]}" for key in range(len(alts))],
-                    mapping[str(obj.get_c_alt())]
-                ]
-                list_dic.append(obj_dt)
-
-            df = pd.DataFrame(list_dic, columns=["Enunciado", "Alternativas", "Resposta"])
-
-            st.dataframe(
-                df,
-                column_config={
-                    "Enunciado": st.column_config.ImageColumn("Enunciado")
-                },
-                hide_index=True
-            )
-
+                alternativas = """<ul style='list-style-type:none;'>
+    <li>a</li>
+    <li>b</li>
+    <li>c</li>
+</ul>"""
+                    
+                rows += f"""<tr>
+    <td>{obj.get_id()}</td>
+    <td>{"Matemática" if obj.get_cat() == 0 else "Português"}</td>
+    <td>{html_enunciado}</td>
+    <td>{alternativas}</td>
+    <td>{obj.get_added_by()}</td>
+</tr>\n"""
+                print(rows)
+            code = f"""<table>
+    <tr>
+        <th>ID</th>
+        <th>Categoria</th>
+        <th>Enunciado</th>
+        <th>Alternativas</th>
+        <th>Criador</th>
+    </tr>
+    {rows}
+</table>"""
+            print(code)
+            st.markdown(code, unsafe_allow_html=True)
+                
     @classmethod
     def questoes(cls):
         tab1, tab2, tab3 = st.tabs(["Criar", "Editar", "Excluir"])
@@ -123,6 +128,7 @@ class AdminUI:
             else:
                 View.inserir_questao(categoria, json_alt, alternativa_correta, texto, final_image, mime_type, st.session_state.adm_id)
                 st.success("Questão adicionada!")
+                st.rerun()
 
     def admins():
         pass
