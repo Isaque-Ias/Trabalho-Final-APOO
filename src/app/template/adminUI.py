@@ -249,7 +249,7 @@ class AdminUI:
                 else:
                     html_enunciado = text
             else:
-                html_enunciado = f'<img src="data:image/png;base64,{base64_string}" width="120">'
+                html_enunciado = f'<img src="data:image/png;base64,{base64_string}" width="120" style="border-radius:15px;">'
             
             obj_alts = json.loads(obj.get_alt())
             values = ""

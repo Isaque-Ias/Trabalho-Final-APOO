@@ -55,8 +55,7 @@ class CourseUI:
         st.markdown(f"""
             <ul style='list_style_type: none;'>
                 {html_questoes}
-            </ul>
-""", unsafe_allow_html=True)
+</ul>""", unsafe_allow_html=True)
         
     @classmethod
     def editar(cls):
