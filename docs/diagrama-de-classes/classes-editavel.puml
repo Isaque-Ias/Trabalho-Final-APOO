@@ -1,0 +1,221 @@
+@startuml
+left to right direction
+class Usuario {
+Integer id
+String nome
+String senha
+Boolean is_matematica
+Boolean is_portugues
+Integer xp_matematica
+Integer xp_portugues
+String description
+String picture
+String picture_mime_type
+Boolean is_beta
+void set_id(Integer id)
+void set_nome(String nome)
+void set_senha(String password)
+void set_matematica(Boolean value)
+void set_portugues(Boolean value)
+void set_xp_matematica(Integer xp)
+void set_xp_portugues(Integer xp)
+void set_description(String description)
+void set_picture(String picture)
+void set_picture_mime_type(String mime_type)
+void set_beta(Boolean beta)
+Integer get_id()
+String get_nome()
+String get_senha()
+Boolean get_matematica()
+Boolean get_portugues()
+Integer get_xp_matematica()
+Integer get_xp_portugues()
+String get_description()
+String get_picture()
+String get_picture_mime_type()
+Boolean set_beta()
+Array to_sqlite()
+}
+class Admin {
+String nome
+String senha
+void set_nome(String nome)
+void set_senha(String senha)
+String get_nome()
+String get_senha()
+}
+class Question {
+Integer id
+Integer category
+String text
+String picture
+String picture_mime_type
+String alternatives
+Integer correct_alternatives
+Integer added_by
+Integer get_id()
+Integer get_category()
+String get_text()
+String get_pic()
+String get_mime_type()
+String get_alt()
+Integer get_c_alt()
+Integer get_added_by()
+void set_id(Integer id)
+void set_category(Integer category)
+void set_text(String text)
+void set_pic(String picture)
+void set_mime_type(String picture_mime_type)
+void set_alt(String alternatives)
+void set_c_alt(Integer correct_alternatives)
+void set_added_by(Integer added_by)
+}
+class Email {
+String email
+Integer fk
+String table
+void set_email(String email)
+void set_fk(String fk)
+void set_table(String table)
+String get_email()
+Integer get_fk()
+String get_table()
+}
+abstract class "DAO" <<static>> {
+Array objetos
+SQL get_connection()
+void setup_db()
+Array[Array] listar()
+Array listar_id(id)
+Boolean excluir_id(id)
+Boolean edit_id(id)
+void salvar()
+}
+class UsuarioDAO {
+String table
+Array listar_nome(String nome)
+Boolean salvar(Usuario obj, String email)
+}
+class EmailDAO {
+String table
+Array email_listar(String email)
+Array listar_admin_id(Integer id)
+Array listar_user_id(Integer id)
+Integer salvar(Email obj)
+}
+class AdminDAO {
+String table
+Boolean salvar(Admin obj, String email)
+Boolean edit_id(Integer id, Admin obj, String email)
+Boolean excluir_id(Integer id)
+}
+class QuestaoDAO {
+String table
+Integer salvar(Integer id)
+Array listar_categoria(Integer categoria)
+Array edit_id(Integer id, Questao obj)
+}
+
+class View {
+void setup_db()
+Array autenticar(String email, String senha)
+Email email_listar(String email)
+Email admin_email(Integer id)
+Integer inserir_usuario(String nome, String email, String senha, String descricao, Boolean matematica, Boolean portugues, Boolean beta)
+Usuario usuario_listar_id(Integer id)
+Admin admin_listar_id(Integer id)
+Usuario usuario_listar_nome(String nome)
+Array admin_listar()
+Integer inserir_admin(String nome, String email, String senha)
+Integer inserir_questao(Integer categoria, Dict alternatives, Integer correct_alternative, String text, String pic, String mime_type, Integer added_by)
+void minimo_admin()
+Array questoes_listar()
+Array questoes_listar_categoria(Integer categoria)
+Array questoes_listar_id(Integer id)
+Boolean questoes_excluir_id(Integer id)
+Boolean admins_excluir_id(Integer id)
+Boolean questao_editar_id(Integer id, Dict alternatives, Integer correct_alternative, String text, String pic, String mime_type, Integer added_by)
+Boolean editar_admin_id(Integer id, String nome, String email, String senha)
+}
+
+class IndexUI {
+void main()
+void states()
+void screens()
+}
+class LoginUI {
+void main()
+}
+class PerfilUI {
+Path CWD
+void fill(Dict session_state, Any default)
+void main()
+void perfil()
+void matematica()
+void portugues()
+void editar()
+void excluir()
+}
+class SigninUI {
+void main()
+void fill(Dict session_state, Any default)
+}
+class ScreenNotFoundUI {
+Path CWD
+void main()
+void admin()
+void fill(Dict session_state, Any default)
+}
+class AdminUI {
+Path CWD
+void fill(Dict session_state, Any default)
+void visao_geral()
+void questoes()
+void questoes_add()
+void questoes_edit()
+void questoes_del()
+void questao_form(Integer id, Questao obj)
+void admins()
+void admins_add()
+void admins_edit()
+void admins_del()
+void admin_form(Integer id, Admin obj)
+void sair()
+void generate_question_table(questoes)
+void generate_adm_table(adms)
+}
+class CourseUI {
+Path CWD
+void fill(Dict session_name, Any default)
+void main()
+void course(Integer category)
+}
+IndexUI "1" - "1" PerfilUI
+IndexUI "1" - "1" LoginUI
+IndexUI "1" - "1" SigninUI
+IndexUI "1" - "1" AdminUI
+IndexUI "1" - "1" ScreenNotFoundUI
+IndexUI "1" - "1" CourseUI
+
+SigninUI "1" - "1" View
+PerfilUI "1" - "1" View
+LoginUI "1" - "1" View
+AdminUI "1" - "1" View
+CourseUI "1" - "1" View
+
+AdminDAO <|-- DAO
+UsuarioDAO <|-- DAO
+EmailDAO <|-- DAO
+QuestaoDAO <|-- DAO
+
+AdminDAO "1" - "0..*" Admin
+UsuarioDAO "1" - "0..*" Usuario
+EmailDAO "1" - "0..*" Email
+QuestaoDAO "1" - "0..*" Questao
+
+
+View "1" - "1" QuestaoDAO
+View "1" - "1" UsuarioDAO
+View "1" - "1" AdminDAO
+View "1" - "1" EmailDAO
+@enduml

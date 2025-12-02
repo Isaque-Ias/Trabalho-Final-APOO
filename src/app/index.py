@@ -37,32 +37,7 @@ class IndexUI:
                 ScreenNotFoundUI.main()
         else:
             PerfilUI.main()
-
-    """
-    def menu_cliente():
-        op = st.sidebar.selectbox("Menu", ["Meus Dados", "Agendar Serviço"])
-        if op == "Meus Dados": PerfilClienteUI.main()
-        if op == "Agendar Serviço": AgendarServicoUI.main()
-
-    def menu_profissional():
-        op = st.sidebar.selectbox("Menu", ["Meus Dados", "Abrir Minha Agenda"])
-        if op == "Meus Dados": PerfilProfissionalUI.main()
-        if op == "Abrir Minha Agenda": AbrirAgendaUI.main()
-
-    def menu_admin():
-        op = st.sidebar.selectbox("Menu", ["Cadastro de Clientes", "Cadastro de Serviços", "Cadastro de Horários", "Cadastro de Profissionais", "Alterar Senha"])
-        if op == "Cadastro de Clientes": ManterClienteUI.main()
-        if op == "Cadastro de Serviços": ManterServicoUI.main()
-        if op == "Cadastro de Horários": ManterHorarioUI.main()
-        if op == "Cadastro de Profissionais": ManterProfissionalUI.main()
-        if op == "Alterar Senha": AlterarSenhaUI.main()
-
-    def sair_do_sistema():
-        if st.sidebar.button("Sair"):
-            del st.session_state["usuario_id"]
-            del st.session_state["usuario_nome"]
-            st.rerun()
-    """
+            
     def main():
         
         View.setup_db()

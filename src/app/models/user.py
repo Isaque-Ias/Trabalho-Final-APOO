@@ -1,6 +1,5 @@
 import bcrypt
 from models.dao import DAO
-from models.error import LengthError
 
 class Usuario:
     def __init__(self, id, nome, senha, mat, pt, xp_mat=0, xp_pt=0, desc="", pic="", pic_mime="", beta=False):
@@ -55,7 +54,7 @@ class Usuario:
         self.__xp_pt = xp_pt
     def set_desc(self, desc):
         if not isinstance(desc, str): raise TypeError("A descrição deve ser um texto válido")
-        if len(desc) > 1000: raise LengthError("Limite de caracteres excedido")
+        if len(desc) > 1000: raise ValueError("Limite de caracteres excedido")
         self.__desc = desc
     def set_pic(self, pic):
         self.__pic = pic

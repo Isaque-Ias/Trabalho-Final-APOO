@@ -56,6 +56,7 @@ class DAO(ABC):
                 user_id INTEGER NOT NULL,
                 course_point INTEGER NOT NULL,
                 completion INTEGER NOT NULL,
+                PRIMARY KEY (question_id, user_id),
                 FOREIGN KEY (question_id) REFERENCES questions(id),
                 FOREIGN KEY (user_id) REFERENCES users(id)
             )
@@ -86,7 +87,9 @@ class DAO(ABC):
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS redaction_topics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                body TEXT NOT NULL
+                body TEXT NOT NULL,
+                added_by INTEGER NOT NULL,
+                FOREIGN KEY (added_by) REFERENCES admins(id)
             )
         ''')
 
@@ -107,7 +110,16 @@ class DAO(ABC):
                 redaction_id INTEGER NOT NULL,
                 user_id INTEGER NOT NULL,
                 rating INTEGER NOT NULL,
+                text TEXT,
                 FOREIGN KEY (redaction_id) REFERENCES redactions(id),
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+        ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                feedback TEXT NOT NULL,
+                user_id INTEGER,
                 FOREIGN KEY (user_id) REFERENCES users(id)
             )
         ''')
@@ -162,10 +174,10 @@ class DAO(ABC):
         conn.close()
 
         return result
-
+    
     @classmethod
     @abstractmethod
-    def abrir(cls):
+    def editar_id(cls):
         pass
 
     @classmethod

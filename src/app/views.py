@@ -28,6 +28,7 @@ class View:
                 return None, None
             if bcrypt.checkpw(senha.encode(), admin.get_senha()):
                 return admin, "admin"
+        return None, None
 
     @staticmethod
     def email_listar(email):

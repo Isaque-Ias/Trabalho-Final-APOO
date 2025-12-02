@@ -1,6 +1,4 @@
 import streamlit as st
-from views import View
-from PIL import Image
 from pathlib import Path
 
 class ScreenNotFoundUI:

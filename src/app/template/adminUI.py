@@ -1,7 +1,6 @@
 import streamlit as st
 from views import View
 from pathlib import Path
-import pandas as pd
 import json
 from PIL import Image
 import io

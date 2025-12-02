@@ -1,7 +1,7 @@
 import streamlit as st
 from views import View
-from PIL import Image
 from pathlib import Path
+import streamlit.components.v1 as components
 
 class CourseUI:
     CWD = Path.cwd()
@@ -27,44 +27,30 @@ class CourseUI:
             cls.course(0)
         else:
             cls.course(1)
-
-    @classmethod
-    def perfil(cls):
-        st.text(cls.usuario.get_nome())
-        img = Image.open(cls.CWD / "src" / "app" / "images" / "no_profile.png")
-        st.image(img, caption="Foto de perfil", width=100)
-
-    @classmethod
-    def mat(cls):
-        st.session_state.course = "mat"
-        st.rerun()
-        
-    @classmethod
-    def pt(cls):
-        st.session_state.course = "pt"
-        st.rerun()
         
     @classmethod
     def course(cls, cat):
         questoes = View.questoes_listar_categoria(cat)
         html_questoes = ""
         for idx, questao in enumerate(questoes):
-            message = f"{idx} - {questao.get_text()}"
+            message = f"{idx} - {questao.get_text()} - <button id='{idx}'>ir</button>"
             html_questoes += f"<li style='margin-left: 0;'>{message}</li>\n"
 
-        st.markdown(f"""
-            <ul style='list_style_type: none;'>
+        d_val = "\{id, action:'open'\}"
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <body>
+            <ul style='list-style-type: none;'>
                 {html_questoes}
-</ul>""", unsafe_allow_html=True)
-        
-    @classmethod
-    def editar(cls):
-        st.text(cls.usuario.get_nome())
-        img = Image.open(cls.CWD / "src" / "app" / "images" / "no_profile.png")
-        st.image(img, caption="Foto de perfil", width=100)
-        
-    @classmethod
-    def excluir(cls):
-        st.text(cls.usuario.get_nome())
-        img = Image.open(cls.CWD / "src" / "app" / "images" / "no_profile.png")
-        st.image(img, caption="Foto de perfil", width=100)
+            </ul>
+
+            <script>
+            console.log('c');
+            Streamlit.setComponentValue({d_val});
+            </script>
+        </body>
+        </html>
+        """
+
+        components.html(html, height=400)
