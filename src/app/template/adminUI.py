@@ -73,6 +73,7 @@ class AdminUI:
     @classmethod
     def questao_form(cls, id=None, obj=None):
         categoria = st.selectbox("Categoria", ["Matemática", "Português"], index=obj.get_cat() if not obj is None else 0, key=f"cat-{id}")
+        title = st.text_input("Título", key=f"gtitle-{id}", value=obj.get_title() if not obj is None else "")
         texto = st.text_area("Texto", key=f"text-{id}", value=obj.get_text() if not obj is None else "")
         has_img = False
         if not obj is None:
@@ -139,12 +140,12 @@ class AdminUI:
                 st.warning(fail)
             else:
                 if id == None:
-                    if View.inserir_questao(categoria, json_alt, alternativa_correta, texto, final_image, mime_type, st.session_state.adm_id):
+                    if View.inserir_questao(categoria, title, json_alt, alternativa_correta, texto, final_image, mime_type, st.session_state.adm_id):
                         st.success("Questão adicionada!")
                     else:
                         st.warning("Questão não foi criada.")
                 else:
-                    if View.editar_questao_id(id, categoria, json_alt, alternativa_correta, texto, final_image, mime_type, st.session_state.adm_id):
+                    if View.editar_questao_id(id, categoria, title, json_alt, alternativa_correta, texto, final_image, mime_type, st.session_state.adm_id):
                         st.success("Questão editada!")
                     else:
                         st.warning("Questão não foi editada.")
@@ -240,15 +241,6 @@ class AdminUI:
         for obj in questoes:
             if filter(obj):
                 continue
-            base64_string = obj.get_pic()
-            if obj.get_text():
-                text = obj.get_text()
-                if len(text) > 30:
-                    html_enunciado = text[:30] + "..."
-                else:
-                    html_enunciado = text
-            else:
-                html_enunciado = f'<img src="data:image/png;base64,{base64_string}" width="120" style="border-radius:15px;">'
             
             obj_alts = json.loads(obj.get_alt())
             values = ""
@@ -263,7 +255,7 @@ class AdminUI:
             rows += f"""<tr>
                 <td>{obj.get_id()}</td>
                 <td>{"Matemática" if obj.get_cat() == 0 else "Português"}</td>
-                <td>{html_enunciado}</td>
+                <td>{obj.get_title()}</td>
                 <td>{alternativas}</td>
                 <td>{c.get_nome()}</td>
             </tr>\n"""
@@ -272,7 +264,7 @@ class AdminUI:
                         <tr>
                             <th>ID</th>
                             <th>Categoria</th>
-                            <th>Enunciado</th>
+                            <th>Título</th>
                             <th>Alternativas</th>
                             <th>Criador</th>
                         </tr>

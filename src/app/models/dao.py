@@ -74,6 +74,7 @@ class DAO(ABC):
             CREATE TABLE IF NOT EXISTS questions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 category INTEGER NOT NULL,
+                title TEXT,
                 text TEXT,
                 picture BLOB,
                 picture_mime_type VARCHAR(127),

@@ -20,6 +20,8 @@ class IndexUI:
                 PerfilUI.main()
             elif st.session_state.screen == "course":
                 CourseUI.main()
+            elif st.session_state.screen == "questao":
+                CourseUI.question()
             elif st.session_state.screen == "login":
                 LoginUI.main()
             elif st.session_state.screen == "signin":
@@ -39,7 +41,6 @@ class IndexUI:
             PerfilUI.main()
             
     def main():
-        
         View.setup_db()
         View.minimo_admin()
         IndexUI.state()

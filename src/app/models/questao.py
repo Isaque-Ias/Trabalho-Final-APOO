@@ -2,7 +2,7 @@ from models.dao import DAO
 import json
 
 class Questao:
-    def __init__(self, id, cat, alt, c_alt, text="", pic="", mime_type="", added_by=None):
+    def __init__(self, id, cat, title, alt, c_alt, text="", pic="", mime_type="", added_by=None):
         self.set_id(id)
         self.set_cat(cat)
         self.set_alt(alt)
@@ -11,9 +11,10 @@ class Questao:
         self.set_pic(pic)
         self.set_mime_type(mime_type)
         self.set_added_by(added_by)
+        self.set_title(title)
         
     def __str__(self):
-        return f"{self.__cat}-{self.__alt}-{self.__c_alt}-{self.__text}-{self.__pic}-{self.__mime_type}-{self.__added_by}"
+        return f"{self.__cat}-{self._title}-{self.__alt}-{self.__c_alt}-{self.__text}-{self.__pic}-{self.__mime_type}-{self.__added_by}"
     
     def get_id(self): return self.__id
     def get_cat(self): return self.__cat
@@ -23,6 +24,7 @@ class Questao:
     def get_pic(self): return self.__pic
     def get_mime_type(self): return self.__mime_type
     def get_added_by(self): return self.__added_by
+    def get_title(self): return self.__title
 
     def set_id(self, id): self.__id = id
     def set_cat(self, cat):
@@ -44,10 +46,13 @@ class Questao:
         self.__mime_type = mime_type
     def set_added_by(self, added_by):
         self.__added_by = added_by
+    def set_title(self, title):
+        self.__title = title
     
     def to_sqlite(self):
         values_array = [
             self.get_cat(),
+            self.get_title(),
             self.get_text(),
             self.get_pic(),
             self.get_mime_type(),
@@ -79,7 +84,7 @@ class QuestaoDAO(DAO):
 
         question_data = obj.to_sqlite()
 
-        cursor.execute(f'INSERT OR IGNORE INTO questions (category, text, picture, picture_mime_type, alternatives, correct_alternative, added_by) VALUES (?, ?, ?, ?, ?, ?, ?)', question_data)
+        cursor.execute(f'INSERT OR IGNORE INTO questions (category, title, text, picture, picture_mime_type, alternatives, correct_alternative, added_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', question_data)
 
         conn.commit()
         conn.close()
@@ -97,7 +102,7 @@ class QuestaoDAO(DAO):
         parameters = question_data + [id]
 
         success = None
-        cursor.execute(f'UPDATE {cls.table} SET category = ?, text = ?, picture = ?, picture_mime_type = ?, alternatives = ?, correct_alternative = ?, added_by = ? WHERE (id == ?)', parameters)
+        cursor.execute(f'UPDATE {cls.table} SET category = ?, title = ?, text = ?, picture = ?, picture_mime_type = ?, alternatives = ?, correct_alternative = ?, added_by = ? WHERE (id == ?)', parameters)
         if cursor.rowcount > 0:
             success = True
         conn.commit()

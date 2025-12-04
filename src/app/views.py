@@ -93,8 +93,8 @@ class View:
         adm_id = AdminDAO.salvar(adm, email)
         return adm_id
 
-    def inserir_questao(cat, alt, c_alt, text, pic, mime_type, adder):
-        q = Questao(0, cat, alt, c_alt, text, pic, mime_type, adder)
+    def inserir_questao(cat, title, alt, c_alt, text, pic, mime_type, adder):
+        q = Questao(0, cat, title, alt, c_alt, text, pic, mime_type, adder)
         q_id = QuestaoDAO.salvar(q)
         return q_id
 
@@ -112,7 +112,7 @@ class View:
         
         objects = []
         for element in query:
-            objects.append(Questao(element[0], element[1], element[5], element[6], element[2], element[3], element[4], element[7]))
+            objects.append(Questao(element[0], element[1], element[2], element[6], element[7], element[3], element[4], element[5], element[8]))
         return objects
 
     @staticmethod
@@ -124,7 +124,7 @@ class View:
 
         objects = []
         for element in query:
-            objects.append(Questao(element[0], element[1], element[5], element[6], element[2], element[3], element[4], element[7]))
+            objects.append(Questao(element[0], element[1], element[2], element[6], element[7], element[3], element[4], element[5], element[8]))
         return objects
 
     @staticmethod
@@ -134,7 +134,7 @@ class View:
         if element == None:
             return None
             
-        object = Questao(element[0], element[1], element[5], element[6], element[2], element[3], element[4], element[7])
+        object = Questao(element[0], element[1], element[2], element[6], element[7], element[3], element[4], element[5], element[8])
         return object
 
     @staticmethod
@@ -148,8 +148,8 @@ class View:
         return success
 
     @staticmethod
-    def editar_questao_id(id, cat, alt, c_alt, text, pic, mime_type, adder):
-        q = Questao(id, cat, alt, c_alt, text, pic, mime_type, adder)
+    def editar_questao_id(id, cat, title, alt, c_alt, text, pic, mime_type, adder):
+        q = Questao(id, cat, title, alt, c_alt, text, pic, mime_type, adder)
         success = QuestaoDAO.edit_id(id, q)
         return success
 
