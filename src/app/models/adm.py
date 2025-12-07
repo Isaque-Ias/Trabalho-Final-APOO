@@ -49,6 +49,8 @@ class AdminDAO(DAO):
             cursor.execute(f'INSERT OR IGNORE INTO emails (email, admin_id) VALUES (?, ?)', (email, cursor.lastrowid))
             if cursor.rowcount > 0:
                 conn.commit()
+            else:
+                id_val = None
                 
         conn.close()
 

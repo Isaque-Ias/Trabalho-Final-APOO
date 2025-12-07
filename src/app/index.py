@@ -26,6 +26,8 @@ class IndexUI:
                 LoginUI.main()
             elif st.session_state.screen == "signin":
                 SigninUI.main()
+            elif st.session_state.screen == "result":
+                CourseUI.result()
             elif st.session_state.screen == "adm_hub":
                 if "adm_id" in st.session_state:
                     if View.admin_listar_id(st.session_state.adm_id):

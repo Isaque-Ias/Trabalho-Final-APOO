@@ -99,15 +99,54 @@ class UsuarioDAO(DAO):
 
         user_data = obj.to_sqlite()
 
-        success = None
+        id_val = None
 
         cursor.execute('INSERT OR IGNORE INTO users (name, password, enrolled_math, enrolled_pt, xp_math, xp_pt, description, profile_pic, profile_pic_mime, is_beta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user_data)
         if cursor.rowcount > 0:
+            id_val = cursor.lastrowid
             cursor.execute(f'INSERT OR IGNORE INTO emails (email, user_id) VALUES (?, ?)', (email, cursor.lastrowid))
+            if cursor.rowcount > 0:
+                conn.commit()
+            else:
+                id_val = None
+
+        conn.close()
+
+        return id_val
+    
+    @classmethod
+    def edit_id(cls, id, obj, email):
+        conn = cls.get_connection()
+        cursor = conn.cursor()
+
+        user_data = obj.to_sqlite()
+
+        parameters = user_data + [id]
+
+        success = None
+        cursor.execute(f'UPDATE OR IGNORE {cls.table} SET name = ?, password = ?, enrolled_math = ?, enrolled_pt = ?, xp_math = ?, xp_pt = ?, description = ?, profile_pic = ?, profile_pic_mime = ?, is_beta = ? WHERE (id == ?)', parameters)
+        if cursor.rowcount > 0:
+            cursor.execute(f'UPDATE OR IGNORE emails SET email = ? WHERE (user_id == ?)', (email, id))
             if cursor.rowcount > 0:
                 conn.commit()
                 success = True
 
+        conn.close()
+        return success
+    
+    @classmethod
+    def excluir_id(cls, id):
+        conn = cls.get_connection()
+        cursor = conn.cursor()
+
+        success = None
+        cursor.execute(f"DELETE FROM {cls.table} WHERE id == ?", (id, ))
+        if cursor.rowcount > 0:
+            cursor.execute(f'DELETE FROM emails WHERE user_id == ?', (id,))
+            if cursor.rowcount > 0:
+                conn.commit()
+                success = True
+        
         conn.close()
 
         return success

@@ -49,6 +49,15 @@ class View:
         return Email(result[0], result[2], "admins")
     
     @staticmethod
+    def user_email(id):
+        result = EmailDAO.listar_user_id(id)
+        if result == None:
+            return None
+        if not result[1] == None:
+            return Email(result[0], result[1], "users")
+        return Email(result[0], result[2], "admins")
+    
+    @staticmethod
     def inserir_usuario(nome, email, senha, descricao, matematica, portugues, beta):
         u = Usuario(0, nome, senha, matematica, portugues, beta, desc=descricao)
         user_id = UsuarioDAO.salvar(u, email)
@@ -148,9 +157,20 @@ class View:
         return success
 
     @staticmethod
+    def users_excluir_id(id):
+        success = UsuarioDAO.excluir_id(id)
+        return success
+
+    @staticmethod
     def editar_questao_id(id, cat, title, alt, c_alt, text, pic, mime_type, adder):
         q = Questao(id, cat, title, alt, c_alt, text, pic, mime_type, adder)
         success = QuestaoDAO.edit_id(id, q)
+        return success
+
+    @staticmethod
+    def editar_usuario_id(id, nome, email, senha, matematica, portugues, xp_mat, xp_pt, descricao, picture, mime_type, beta):
+        u = Usuario(id, nome, senha, matematica, portugues, xp_mat, xp_pt, descricao, picture, mime_type, beta)
+        success = UsuarioDAO.edit_id(id, u, email)
         return success
 
     @staticmethod

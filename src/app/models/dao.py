@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 import sqlite3
 from pathlib import Path
-import os
-import sys
 
 class DAO(ABC):
     _objetos = []
@@ -54,8 +52,6 @@ class DAO(ABC):
             CREATE TABLE IF NOT EXISTS course_progress (
                 question_id INTEGER NOT NULL,
                 user_id INTEGER NOT NULL,
-                course_point INTEGER NOT NULL,
-                completion INTEGER NOT NULL,
                 PRIMARY KEY (question_id, user_id),
                 FOREIGN KEY (question_id) REFERENCES questions(id),
                 FOREIGN KEY (user_id) REFERENCES users(id)

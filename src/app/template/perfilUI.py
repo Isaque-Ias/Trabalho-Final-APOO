@@ -2,6 +2,8 @@ import streamlit as st
 from views import View
 from PIL import Image
 from pathlib import Path
+import io
+import base64
 
 class PerfilUI:
     CWD = Path.cwd()
@@ -30,6 +32,8 @@ class PerfilUI:
                 st.header(f"Olá, {cls.usuario.get_nome()}! Escolha um dos seus cursos nas abas!")
             else:
                 opcoes.extend(["Editar Perfil", "Excluir Perfil"])
+                if not cls.usuario.get_mat() or not cls.usuario.get_pt():
+                    opcoes.append("Novo Curso")
             if cls.usuario.get_mat():
                 opcoes.append("Matemática")
             if cls.usuario.get_pt():
@@ -48,11 +52,19 @@ class PerfilUI:
                         PerfilUI.editar()
                     elif tab_name == "Excluir Perfil":
                         PerfilUI.excluir()
+                    elif tab_name == "Novo Curso":
+                        PerfilUI.new_course()
                     
     @classmethod
     def perfil(cls):
         st.text(cls.usuario.get_nome())
-        img = Image.open(cls.CWD / "src" / "app" / "images" / "no_profile.png")
+        img_bytes = cls.usuario.get_pic()
+        if img_bytes:
+            b64_bytes = img_bytes.encode("utf-8")
+            img_bytes = base64.b64decode(b64_bytes)
+            img = io.BytesIO(img_bytes)
+        else:
+            img = Image.open(cls.CWD / "src" / "app" / "images" / "no_profile.png")
         st.image(img, caption="Foto de perfil", width=100)
         if st.button("Sair da conta", key="perfil-sair"):
             st.session_state.usuario_id = None
@@ -76,11 +88,63 @@ class PerfilUI:
     @classmethod
     def editar(cls):
         st.text(cls.usuario.get_nome())
-        img = Image.open(cls.CWD / "src" / "app" / "images" / "no_profile.png")
-        st.image(img, caption="Foto de perfil", width=100)
+        img_bytes = cls.usuario.get_pic()
+        if img_bytes:
+            b64_bytes = img_bytes.encode("utf-8")
+            img_bytes = base64.b64decode(b64_bytes)
+            img = io.BytesIO(img_bytes)
+        else:
+            img = Image.open(cls.CWD / "src" / "app" / "images" / "no_profile.png")
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            st.image(img, caption="Foto de perfil", width=100)
+        with col2:
+            imagem = st.file_uploader("Mova Foto de perfil", ["png", "jpg", "jpeg"], False, key=f"img")
+        nome = st.text_input("Trocar meu nome", cls.usuario.get_nome())
+        descricao = st.text_area("Descrição", cls.usuario.get_desc(), max_chars=100)
+        if st.button("Salvar"):
+            final_image = ""
+            mime_type = ""
+            if imagem:
+                image = Image.open(imagem)
+                mime_type = image.format.lower()
+                buffer = io.BytesIO()
+                image.save(buffer, format=image.format)
+                blob_image = buffer.getvalue()
+                final_image = base64.b64encode(blob_image).decode("utf-8")
+            email = View.user_email(st.session_state.usuario_id)
+            nome_in_system = View.usuario_listar_nome(nome)
+            if nome_in_system == None or nome_in_system.get_id() == cls.usuario.get_id():
+                if email == None:
+                    st.error("Email indisponível")
+                else:
+                    if View.editar_usuario_id(st.session_state.usuario_id,
+                                        nome,
+                                        email.get_email(),
+                                        cls.usuario.get_senha(),
+                                        cls.usuario.get_mat(),
+                                        cls.usuario.get_pt(),
+                                        cls.usuario.get_xp_mat(),
+                                        cls.usuario.get_xp_pt(),
+                                        descricao,
+                                        final_image,
+                                        mime_type,
+                                        cls.usuario.get_beta()
+                                        ):
+                        st.success("Dados atualizados!")
+                    else:
+                        st.error("Usuário não foi adicioando")
+            else:
+                st.warning("Nome já está em uso")
         
     @classmethod
     def excluir(cls):
-        st.text(cls.usuario.get_nome())
-        img = Image.open(cls.CWD / "src" / "app" / "images" / "no_profile.png")
-        st.image(img, caption="Foto de perfil", width=100)
+        if st.button("Excluir perfil"):
+            if View.users_excluir_id(st.session_state.usuario_id):
+                st.session_state.screen = "login"
+            else:
+                st.warning("Erro no sistema...")
+
+    @classmethod
+    def new_course(cls):
+        pass

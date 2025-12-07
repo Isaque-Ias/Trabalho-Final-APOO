@@ -81,9 +81,10 @@ class CourseUI:
                 unsafe_allow_html=True
             )
             st.divider()
-            if st.button("Voltar", key="question-voltar"):
+            if st.button("Voltar para o curso", key="question-voltar"):
                 st.session_state.screen = "course"
                 st.rerun()
+            st.divider()
             img_bytes = question.get_pic()
             if img_bytes:
                     b64_bytes = img_bytes.encode("utf-8")
@@ -98,6 +99,23 @@ class CourseUI:
                     alternative = idx + 1
             if alternative != 0:
                 if question.get_c_alt() == alternative:
-                    st.success("Correto!")
+                    st.session_state.screen = "result"
+                    st.session_state.correct = True
                 else:
-                    st.error("Errado..")
+                    st.session_state.screen = "result"
+                    st.session_state.correct = False
+                View.set_course_progress()
+                st.rerun()
+
+    def result():
+        result_value = st.session_state.correct
+        if result_value:
+            st.header("Parabéns!")
+            st.write("Você acertou a questão!")
+        else:
+            st.header("Que pena...")
+            st.write("Infelizmente você errou a questão...")
+
+        if st.button("Continuar"):
+            st.session_state.screen = "course"
+            st.rerun()
