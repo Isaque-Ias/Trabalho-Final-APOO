@@ -150,8 +150,10 @@ class UsuarioDAO(DAO):
             if cursor.rowcount > 0:
                 cursor.execute(f'DELETE FROM course_progress WHERE user_id = ?', (id, ))
                 if cursor.rowcount > 0:
-                    conn.commit()
-                    success = True
+                    cursor.execute(f'DELETE FROM following WHERE follower_id = ?', (id, ))
+                    if cursor.rowcount > 0:
+                        conn.commit()
+                        success = True
         
         conn.close()
 
@@ -219,3 +221,53 @@ class UsuarioDAO(DAO):
         conn.close()
 
         return success
+    
+    @classmethod
+    def amizade_id(cls, adding, added):
+        conn = cls.get_connection()
+        cursor = conn.cursor()
+
+        success = None
+        cursor.execute(f'INSERT OR IGNORE INTO following (follower_id, following_id) VALUES (?, ?)', (adding, added))
+        if cursor.rowcount > 0:
+            conn.commit()
+            success = True
+
+        conn.close()
+
+        return success
+    
+    @classmethod
+    def amizade_listar(cls, usuario):
+        conn = cls.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(f'''
+            SELECT f1.follower_id
+            FROM following f1
+            JOIN following f2
+            ON f1.follower_id = f2.following_id
+            AND f1.following_id = f2.follower_id
+            WHERE f1.following_id = ?
+        ''', (usuario, ))
+            
+        data = cursor.fetchall()
+        
+        conn.close()
+
+        return data
+    
+    @classmethod
+    def pedidos_listar(cls, usuario):
+        conn = cls.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(f'''
+            SELECT * FROM following WHERE following_id = ?
+        ''', (usuario,))
+            
+        data = cursor.fetchall()
+        
+        conn.close()
+
+        return data

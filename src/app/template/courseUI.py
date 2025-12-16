@@ -21,6 +21,9 @@ class CourseUI:
             st.session_state.course = "pt"
             if cls.usuario.get_xp_mat() > cls.usuario.get_xp_pt():
                 st.session_state.course = "mat"
+                
+        if st.session_state.course == "mat" and not cls.usuario.get_mat():
+            st.session_state.course = "pt"
 
         if st.button("Voltar"):
             st.session_state.screen = "perfil"
@@ -28,9 +31,15 @@ class CourseUI:
             st.rerun()
 
         if st.session_state.course == "mat":
-            cls.course(0)
+            if cls.usuario.get_mat() == 1:
+                cls.course(0)
+            else:
+                st.write("Você não está inscrito(a) nesse curso. Volte e se inscreva.")
         else:
-            cls.course(1)
+            if cls.usuario.get_pt() == 1:
+                cls.course(1)
+            else:
+                st.write("Você não está inscrito(a) nesse curso. Volte e se inscreva.")
             
     @classmethod
     def course(cls, cat):

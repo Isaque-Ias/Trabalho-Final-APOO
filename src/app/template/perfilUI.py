@@ -171,7 +171,49 @@ class PerfilUI:
 
     @classmethod
     def friends(cls):
-        pass
+        tab1, tab2, tab3 = st.tabs(["Adicionar amigos", "Amigos", "Pedidos recebidos"])
+        with tab1:
+            st.write("Seu ID de amizade é este:")
+            st.header(st.session_state.usuario_id)
+            friend = st.number_input("Adicione um amigo por ID!", 1)
+            opcao = View.usuario_listar_id(friend)
+            st.selectbox("", [opcao.get_nome() if opcao is not None else ""], index=0)
+            if st.button("Enviar amizade"):
+                if View.amizade_id(cls.usuario.get_id(), friend):
+                    st.success("Pedido enviado!")
+                else:
+                    st.error("Falha ao enviar...")
+        with tab2:
+            friends = View.amizades_listar(cls.usuario.get_id())
+            col1, col2, col3 = st.columns([1, 1, 1])
+            
+            with col1:
+                for friend in friends:
+                    st.write(friend.get_nome())
+            with col2:
+                for friend in friends:
+                    st.write(friend.get_xp_mat())
+            with col3:
+                for friend in friends:
+                    st.write(friend.get_xp_pt())
+                
+            st.divider()
+
+        with tab3:
+            friends = View.pedidos_listar(cls.usuario.get_id())
+            col1, col2, col3 = st.columns([1, 1, 1])
+            
+            with col1:
+                for friend in friends:
+                    st.write(friend.get_nome())
+            with col2:
+                for friend in friends:
+                    st.write(friend.get_xp_mat())
+            with col3:
+                for friend in friends:
+                    st.write(friend.get_xp_pt())
+                
+            st.divider()
 
     @classmethod
     def beta(cls):
