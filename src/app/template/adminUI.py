@@ -280,7 +280,6 @@ class AdminUI:
                 continue
             
             email = View.admin_listar_id(obj.get_id())
-            print(email)
 
             rows += f"""<tr>
                 <td>{obj.get_id()}</td>
