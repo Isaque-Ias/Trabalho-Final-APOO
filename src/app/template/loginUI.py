@@ -30,7 +30,6 @@ class LoginUI:
                 st.session_state.pop("descricao", "fail")
                 st.session_state.pop("matematica", "fail")
                 st.session_state.pop("portugues", "fail")
-                st.session_state.pop("beta", "fail")
                 st.session_state.pop("sign_step", "fail")
                 st.session_state.screen = "signin"
                 st.rerun()

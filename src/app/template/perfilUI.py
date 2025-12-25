@@ -27,11 +27,7 @@ class PerfilUI:
                 st.session_state.usuario_id = None
                 st.session_state.screen = "login"
         else:
-            opcoes = ["Perfil", "Amizades"]
-            if cls.usuario.get_beta():
-                opcoes.append("Sair do Beta")
-            else:
-                opcoes.append("Virar Beta")
+            opcoes = ["Perfil"]
 
             if "tutorial" in st.session_state and st.session_state.tutorial == True:
                 st.header(f"Olá, {cls.usuario.get_nome()}! Escolha um dos seus cursos nas abas!")
@@ -59,12 +55,6 @@ class PerfilUI:
                         PerfilUI.excluir()
                     elif tab_name == "Novo Curso":
                         PerfilUI.new_course()
-                    elif tab_name == "Amizades":
-                        PerfilUI.friends()
-                    elif tab_name == "Virar Beta":
-                        PerfilUI.beta()
-                    elif tab_name == "Sair do Beta":
-                        PerfilUI.beta()
                     
     @classmethod
     def perfil(cls):
@@ -167,62 +157,4 @@ class PerfilUI:
         if not cls.usuario.get_pt():
             if st.button("Entrar em português"):
                 View.set_course(cls.usuario.get_id(), 1)
-                st.rerun()
-
-    @classmethod
-    def friends(cls):
-        tab1, tab2, tab3 = st.tabs(["Adicionar amigos", "Amigos", "Pedidos recebidos"])
-        with tab1:
-            st.write("Seu ID de amizade é este:")
-            st.header(st.session_state.usuario_id)
-            friend = st.number_input("Adicione um amigo por ID!", 1)
-            opcao = View.usuario_listar_id(friend)
-            st.selectbox("", [opcao.get_nome() if opcao is not None else ""], index=0)
-            if st.button("Enviar amizade"):
-                if View.amizade_id(cls.usuario.get_id(), friend):
-                    st.success("Pedido enviado!")
-                else:
-                    st.error("Falha ao enviar...")
-        with tab2:
-            friends = View.amizades_listar(cls.usuario.get_id())
-            col1, col2, col3 = st.columns([1, 1, 1])
-            
-            with col1:
-                for friend in friends:
-                    st.write(friend.get_nome())
-            with col2:
-                for friend in friends:
-                    st.write(friend.get_xp_mat())
-            with col3:
-                for friend in friends:
-                    st.write(friend.get_xp_pt())
-                
-            st.divider()
-
-        with tab3:
-            friends = View.pedidos_listar(cls.usuario.get_id())
-            col1, col2, col3 = st.columns([1, 1, 1])
-            
-            with col1:
-                for friend in friends:
-                    st.write(friend.get_nome())
-            with col2:
-                for friend in friends:
-                    st.write(friend.get_xp_mat())
-            with col3:
-                for friend in friends:
-                    st.write(friend.get_xp_pt())
-                
-            st.divider()
-
-    @classmethod
-    def beta(cls):
-        beta_val = cls.usuario.get_beta()
-        if beta_val:
-            if st.button("Deixar de ser Beta"):
-                View.set_beta(cls.usuario.get_id(), 0)
-                st.rerun()
-        else:
-            if st.button("Virar Beta"):
-                View.set_beta(cls.usuario.get_id(), 1)
                 st.rerun()

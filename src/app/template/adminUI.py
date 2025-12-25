@@ -192,7 +192,7 @@ class AdminUI:
     def admin_form(cls, id=None, obj=None):
         defemail = ""
         if not obj is None:
-            defemail = View.admin_email(id).get_email()
+            defemail = View.admin_listar_id(id).get_email()
         nome = st.text_input("Nome", key=f"nome-{id}", value=obj.get_nome() if not obj is None else "")
         if not id == 1:
             email = st.text_input("E-mail", key=f"admemail-{id}", value=defemail if not obj is None else "")
@@ -208,8 +208,8 @@ class AdminUI:
                     st.warning("Insira um nome")
                 else:
                     if id == None:
-                        email_obj = View.email_listar(email)
-                        if not email_obj is None:
+                        email = View.email_listar(email)
+                        if not email is None:
                             st.warning("Email em uso")
                         else:
                             if View.inserir_admin(nome, email, senha):
@@ -279,7 +279,8 @@ class AdminUI:
             if filter(obj):
                 continue
             
-            email = View.admin_email(obj.get_id())
+            email = View.admin_listar_id(obj.get_id())
+            print(email)
 
             rows += f"""<tr>
                 <td>{obj.get_id()}</td>

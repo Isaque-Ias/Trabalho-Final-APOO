@@ -19,11 +19,9 @@ class CourseUI:
         cls.usuario = View.usuario_listar_id(st.session_state.usuario_id)
         if not "course" in st.session_state:
             st.session_state.course = "pt"
-            if cls.usuario.get_xp_mat() > cls.usuario.get_xp_pt():
-                st.session_state.course = "mat"
                 
-        if st.session_state.course == "mat" and not cls.usuario.get_mat():
-            st.session_state.course = "pt"
+        if st.session_state.course == "pt" and not cls.usuario.get_pt():
+            st.session_state.course = "mat"
 
         if st.button("Voltar"):
             st.session_state.screen = "perfil"

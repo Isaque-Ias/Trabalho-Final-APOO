@@ -2,22 +2,27 @@ import bcrypt
 from models.dao import DAO
 
 class Admin:
-    def __init__(self, id, nome, senha):
+    def __init__(self, id, nome, email, senha):
         self.set_id(id)
         self.set_nome(nome)
+        self.set_email(email)
         self.set_senha(senha)
         
     def __str__(self):
-        return f"{self.__id}-{self.__nome}-{self.__senha}"
+        return f"{self.__id}-{self.__nome}-{self.__email}-{self.__senha}"
 
     def get_id(self): return self.__id
     def get_nome(self): return self.__nome
+    def get_email(self): return self.__email
     def get_senha(self): return self.__senha
 
     def set_id(self, id): self.__id = id
     def set_nome(self, nome):
         if nome == "": raise ValueError("Nome inválido")
         self.__nome = nome
+    def set_email(self, email):
+        if email == "": raise ValueError("E-mail inválido")
+        self.__email = email
     def set_senha(self, senha):
         if senha == "": raise ValueError("Senha inválida")
         if isinstance(senha, bytes):
@@ -28,6 +33,7 @@ class Admin:
     def to_sqlite(self):
         values_array = [
             self.get_nome(),
+            self.get_email(),
             self.get_senha()
         ]
         return values_array
@@ -36,28 +42,24 @@ class AdminDAO(DAO):
     table = "admins"
 
     @classmethod
-    def salvar(cls, obj, email):
+    def salvar(cls, obj):
         conn = cls.get_connection()
         cursor = conn.cursor()
 
         user_data = obj.to_sqlite()
 
         id_val = None
-        cursor.execute('INSERT OR IGNORE INTO admins (name, password) VALUES (?, ?)', user_data)
+        cursor.execute('INSERT OR IGNORE INTO admins (name, email, password) VALUES (?, ?, ?)', user_data)
         if cursor.rowcount > 0:
             id_val = cursor.lastrowid
-            cursor.execute(f'INSERT OR IGNORE INTO emails (email, admin_id) VALUES (?, ?)', (email, cursor.lastrowid))
-            if cursor.rowcount > 0:
-                conn.commit()
-            else:
-                id_val = None
+            conn.commit()
                 
         conn.close()
 
         return id_val
 
     @classmethod
-    def edit_id(cls, id, obj, email):
+    def edit_id(cls, id, obj):
         conn = cls.get_connection()
         cursor = conn.cursor()
 
@@ -66,12 +68,10 @@ class AdminDAO(DAO):
         parameters = adm_data + [id]
 
         success = None
-        cursor.execute(f'UPDATE OR IGNORE {cls.table} SET name = ?, password = ? WHERE (id == ?)', parameters)
+        cursor.execute(f'UPDATE OR IGNORE {cls.table} SET name = ?, email = ?, password = ? WHERE (id == ?)', parameters)
         if cursor.rowcount > 0:
-            cursor.execute(f'UPDATE OR IGNORE emails SET email = ? WHERE (admin_id == ?)', (email, id))
-            if cursor.rowcount > 0:
-                conn.commit()
-                success = True
+            conn.commit()
+            success = True
 
         conn.close()
         return success
@@ -84,10 +84,8 @@ class AdminDAO(DAO):
         success = None
         cursor.execute(f"DELETE FROM {cls.table} WHERE id == ?", (id, ))
         if cursor.rowcount > 0:
-            cursor.execute(f'DELETE FROM emails WHERE admin_id == ?', (id,))
-            if cursor.rowcount > 0:
-                conn.commit()
-                success = True
+            conn.commit()
+            success = True
         
         conn.close()
 

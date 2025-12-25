@@ -21,8 +21,8 @@ class SigninUI:
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("Continuar"):
-                    usuario = View.email_listar(email)
-                    if usuario == None:
+                    conta = View.email_listar(email)
+                    if conta == None:
                         st.session_state.email = email
                         st.session_state.senha = senha
                         st.session_state.sign_step = 1
@@ -50,7 +50,7 @@ class SigninUI:
                     st.rerun()
                     
             with col2:
-                if st.button("Continuar"):
+                if st.button("Criar conta"):
                     if not matematica and not portugues:
                         warn = "Escolha pelo menos um curso"
                     else:
@@ -61,48 +61,31 @@ class SigninUI:
                             st.session_state.matematica = matematica
                             st.session_state.portugues = portugues
                             st.session_state.sign_step = 2
-                            st.rerun()
+                            
+                            session_data = [
+                                st.session_state.nome,
+                                st.session_state.email,
+                                st.session_state.senha,
+                                st.session_state.descricao,
+                                st.session_state.matematica,
+                                st.session_state.portugues
+                            ]
+                            
+                            user_id = View.inserir_usuario(*session_data)
+                            
+                            if user_id is None:
+                                warn = "Não foi possível criar o usuário."
+                            else:
+                                st.session_state.usuario_id = user_id
+                                st.session_state.perfil_id = user_id
+                                st.session_state.tutorial = True
+                                st.session_state.screen = "perfil"
+                                st.session_state.pop("sign_step", "fail")
+                                
+                                st.rerun()
+
                         else:
                             warn = "Nome já está em uso"
-            
-            if warn:
-                st.warning(warn)
-            
-        elif st.session_state.sign_step == 2:
-            st.header(f"Certo {st.session_state.nome}! Agora... uma última pergunta")
-            beta = st.checkbox("Gostaria de ingressar como um testador beta? (você sempre poderá mudar depois...)", value=cls.fill("beta", False))
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("Voltar"):
-                    st.session_state.sign_step = 1
-                    st.rerun()
-                    
-            with col2:
-                if st.button("Criar conta"):
-                    st.session_state.beta = beta
-
-                    session_data = [
-                        st.session_state.nome,
-                        st.session_state.email,
-                        st.session_state.senha,
-                        st.session_state.descricao,
-                        st.session_state.matematica,
-                        st.session_state.portugues,
-                        st.session_state.beta
-                    ]
-                    
-                    user_id = View.inserir_usuario(*session_data)
-                    
-                    if user_id is None:
-                        warn = "Não foi possível criar o usuário."
-                    else:
-                        st.session_state.usuario_id = user_id
-                        st.session_state.perfil_id = user_id
-                        st.session_state.tutorial = True
-                        st.session_state.screen = "perfil"
-                        st.session_state.pop("sign_step", "fail")
-                        
-                        st.rerun()
                         
             if warn:
                 st.warning(warn)

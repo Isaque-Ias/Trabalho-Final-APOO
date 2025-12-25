@@ -1,6 +1,5 @@
 from models.dao import DAO
 from models.user import Usuario, UsuarioDAO
-from models.email import Email, EmailDAO
 from models.adm import Admin, AdminDAO
 from models.questao import Questao, QuestaoDAO
 import bcrypt
@@ -12,60 +11,47 @@ class View:
 
     @staticmethod
     def autenticar(email, senha):
-        data = View.email_listar(email)
-        if data == None:
+        usuario = View.usuario_listar_email(email)
+        admin = View.admin_listar_email(email)
+        if usuario is None and admin is None:
             return None, None
 
-        if data.get_table() == "users":
-            usuario = View.usuario_listar_id(data.get_fk())
-            if usuario == None:
-                return None, None
+        if usuario:
             if bcrypt.checkpw(senha.encode(), usuario.get_senha()):
                 return usuario, "user"
         else:
-            admin = View.admin_listar_id(data.get_fk())
-            if admin == None:
-                return None, None
             if bcrypt.checkpw(senha.encode(), admin.get_senha()):
                 return admin, "admin"
+
         return None, None
 
     @staticmethod
     def email_listar(email):
-        result = EmailDAO.email_listar(email)
-        if result == None:
+        usuario = UsuarioDAO.listar_atributo("email", email)
+        admin = AdminDAO.listar_atributo("email", email)
+        if usuario is None and admin is None:
             return None
-        if not result[1] == None:
-            return Email(result[0], result[1], "users")
-        return Email(result[0], result[2], "admins")
+
+        if usuario:
+            return usuario
+        return admin
     
     @staticmethod
-    def admin_email(id):
-        result = EmailDAO.listar_admin_id(id)
-        if result == None:
-            return None
-        if not result[1] == None:
-            return Email(result[0], result[1], "users")
-        return Email(result[0], result[2], "admins")
-    
-    @staticmethod
-    def user_email(id):
-        result = EmailDAO.listar_user_id(id)
-        if result == None:
-            return None
-        if not result[1] == None:
-            return Email(result[0], result[1], "users")
-        return Email(result[0], result[2], "admins")
-    
-    @staticmethod
-    def inserir_usuario(nome, email, senha, descricao, matematica, portugues, beta):
-        u = Usuario(0, nome, senha, matematica, portugues, desc=descricao, beta=beta)
-        user_id = UsuarioDAO.salvar(u, email)
+    def inserir_usuario(nome, email, senha, descricao, matematica, portugues):
+        u = Usuario(0, nome, email, senha, matematica, portugues, desc=descricao)
+        user_id = UsuarioDAO.salvar(u)
         return user_id
     
     @staticmethod
     def usuario_listar_id(id):
         result = UsuarioDAO.listar_id(id)
+        if result == None:
+            return
+        return Usuario(*result)
+    
+    @staticmethod
+    def usuario_listar_email(email):
+        result = UsuarioDAO.listar_atributo("email", email)
         if result == None:
             return
         return Usuario(*result)
@@ -78,8 +64,15 @@ class View:
         return Admin(*result)
     
     @staticmethod
+    def admin_listar_email(email):
+        result = AdminDAO.listar_atributo("email", email)
+        if result == None:
+            return
+        return Admin(*result)
+    
+    @staticmethod
     def usuario_listar_nome(nome):
-        result = UsuarioDAO.listar_nome(nome)
+        result = UsuarioDAO.listar_atributo("name", nome)
         if result == None:
             return
         return Usuario(*result)
@@ -93,13 +86,13 @@ class View:
         
         objects = []
         for element in query:
-            objects.append(Admin(element[0], element[1], element[2]))
+            objects.append(Admin(element[0], element[1], element[2], element[3]))
         return objects
     
     @staticmethod
     def inserir_admin(nome, email, senha):
-        adm = Admin(0, nome, senha)
-        adm_id = AdminDAO.salvar(adm, email)
+        adm = Admin(0, nome, email, senha)
+        adm_id = AdminDAO.salvar(adm)
         return adm_id
 
     def inserir_questao(cat, title, alt, c_alt, text, pic, mime_type, adder):

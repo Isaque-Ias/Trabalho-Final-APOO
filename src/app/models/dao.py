@@ -25,31 +25,18 @@ class DAO(ABC):
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL UNIQUE,
+                email TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
                 enrolled_math INTEGER NOT NULL,
                 enrolled_pt INTEGER NOT NULL,
-                xp_math INTEGER,
-                xp_pt INTEGER,
                 description TEXT,
                 profile_pic BLOB,
-                profile_pic_mime VARCHAR(127),
-                is_beta INTEGER NOT NULL
+                profile_pic_mime VARCHAR(127)
             )
         ''')
 
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS following (
-                following_id INTEGER NOT NULL,
-                follower_id INTEGER NOT NULL,
-                PRIMARY KEY (following_id, follower_id)
-                FOREIGN KEY (following_id) REFERENCES users(id),
-                FOREIGN KEY (follower_id) REFERENCES users(id)
-                CHECK(follower_id != following_id)
-            )
-        ''')
-
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS course_progress (
+            CREATE TABLE IF NOT EXISTS answers (
                 question_id INTEGER NOT NULL,
                 user_id INTEGER NOT NULL,
                 PRIMARY KEY (question_id, user_id),
@@ -62,6 +49,7 @@ class DAO(ABC):
             CREATE TABLE IF NOT EXISTS admins (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL
             )
         ''')
@@ -78,56 +66,6 @@ class DAO(ABC):
                 correct_alternative INTEGER NOT NULL,
                 added_by INTEGER,
                 FOREIGN KEY (added_by) REFERENCES admins(id)
-            )
-        ''')
-
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS redaction_topics (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                body TEXT NOT NULL,
-                added_by INTEGER NOT NULL,
-                FOREIGN KEY (added_by) REFERENCES admins(id)
-            )
-        ''')
-
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS redactions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                writer_id INTEGER NOT NULL,
-                body TEXT NOT NULL,
-                topic_id INTEGER NOT NULL,
-                FOREIGN KEY (writer_id) REFERENCES users(id),
-                FOREIGN KEY (topic_id) REFERENCES redaction_topics(id)
-            )
-        ''')
-
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS redaction_feedbacks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                redaction_id INTEGER NOT NULL,
-                user_id INTEGER NOT NULL,
-                rating INTEGER NOT NULL,
-                text TEXT,
-                FOREIGN KEY (redaction_id) REFERENCES redactions(id),
-                FOREIGN KEY (user_id) REFERENCES users(id)
-            )
-        ''')
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS feedback (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                feedback TEXT NOT NULL,
-                user_id INTEGER,
-                FOREIGN KEY (user_id) REFERENCES users(id)
-            )
-        ''')
-
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS emails (
-                email TEXT NOT NULL UNIQUE,
-                user_id INT,
-                admin_id INT,
-                FOREIGN KEY (user_id) REFERENCES users(id),
-                FOREIGN KEY (admin_id) REFERENCES admins(id)
             )
         ''')
 
@@ -153,6 +91,18 @@ class DAO(ABC):
         cursor = conn.cursor()
 
         cursor.execute(f"SELECT * FROM {cls.table} WHERE id == ?", (id, ))
+        results = cursor.fetchone()
+        
+        conn.close()
+
+        return results
+
+    @classmethod
+    def listar_atributo(cls, nome, valor):
+        conn = cls.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(f"SELECT * FROM {cls.table} WHERE {nome} == ?", (valor, ))
         results = cursor.fetchone()
         
         conn.close()
