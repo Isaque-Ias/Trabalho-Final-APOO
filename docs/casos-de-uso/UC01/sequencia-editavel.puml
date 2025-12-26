@@ -1,0 +1,73 @@
+@startuml
+
+participant LoginUI as log
+participant View as view
+participant AlunoDAO as aluno
+participant AdminDAO as admin
+database Database as db
+
+autonumber 1.1
+log -> view : c, tipo := autenticar(String email, String senha) : Conta, String
+activate view
+note top
+  Conta = Aluno | Admin
+end note
+
+autonumber inc A
+'Now we have 2.1
+view -> view : aluno := aluno_listar_email(Integer id) : Aluno | None
+activate view
+
+view -> aluno: resultado := listar_atributo(String nome_atributo, Any valor) : Array | None
+activate aluno
+
+aluno -> db : resultado: = fetch(String query) : Array | None
+activate db
+
+db --> aluno
+deactivate db
+
+aluno --> view
+deactivate aluno
+
+view --> view : <<create>> new Aluno()
+deactivate view
+
+autonumber inc A
+'Now we have 3.1
+
+view -> view : admin := admin_listar_email(Integer id) : Admin | None
+activate view
+
+view -> admin: resultado := listar_atributo(String nome_atributo, Any valor) : Array | None
+activate admin
+
+admin -> db : resultado: = fetch(String query) : Array | None
+activate db
+
+db --> admin
+deactivate db
+
+admin--> view
+deactivate admin
+
+view --> view : <<create>> new Admin()
+
+autonumber inc A
+'Now we have 4.1
+
+alt aluno is not None
+
+  view --> log : Aluno, "aluno"
+
+else admin is not None
+
+  view --> log : Admin, "admin"
+
+else admin == aluno == None
+
+  view --> log : None, None
+
+end
+
+@enduml

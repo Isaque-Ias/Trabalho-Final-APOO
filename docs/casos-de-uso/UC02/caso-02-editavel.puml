@@ -1,0 +1,9 @@
+@startuml
+
+"Usuario" as user
+
+"Fazer questão" as (m_quest)
+
+user --> (m_quest)
+
+@enduml

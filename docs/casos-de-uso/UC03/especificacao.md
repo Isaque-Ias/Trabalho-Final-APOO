@@ -1,35 +1,39 @@
-# Adicionar Amizade
+# Gerenciar Questão
 
 # Atores:
 
-> Usuário
+> Administrador
 
 # Pré-condições
-> 1. O usuário deve estar autenticado no sistema
+> 1. O administrador deve estar autenticado no sistema
+> 2. O administrador deve estar na interface de gerenciamento de questões
 
 # Pos-condições
-> 1. O usuário é redirecionado para a tela de cursos
-> 2. A pontuação do usuário no sistema para o respectivo curso é aumentada
-> 3. O progresso do usuário no curso é atualizado
+> 1. Os dados da tabela de questões serão atualizados
 
 # Fluxo principal
-> 1. O usuário acessa o perfil de um usuário
-> 2. O usuário pede para adicionar um perfil em suas amizades
-> 3. O sistema envia o pedido para o perfil
+> 1. O administrador seleciona o tipo de gerenciamento (Adicioanr, editar ou excluir)
+> 2. O administrador preenche o formulário de gerenciamento com dados adequados
+> 3. O sistema valida os campos do formulário
+> 4. O sistema modifica o banco de dados
+> 4. O sistema devolve uma mensagem de sucesso
 
 # Fluxos alternativos
-> A1 - O usuário adiciona um amigo por meio de um amigo
-
->> ## passo 1
->> 2. O usuário acessa as amizades de um perfil adicionado
->> 3. O pede para adicionar uma dessas amizades em suas amizades
->> 4. O sistema envia o pedido para essa amizade
+> *Não há fluxos alternativos*
 
 # Exceções
-> E1 - O perfil acessado é do próprio usuário 
->> ## Passo 1
->> 2. O sistema impede que o usuário seja adicionado
+> E1 - Usuário não insere alterantivas
+>> ## Passo 3
+>> 4. O sistema devolve um erro explicando que o usuário deve preencher pelo menos dois campos de alterantiva para cada questão
 
-> E2 - A mensagem não chega no perfil
+> E2 - O usuário omite ambos os campos de enunciado e imagem
+>> ## Passo 3
+>> 4. O sistema devolve um erro indicando que pelo menos um dos dois campos deve conter alguma informação
+
+> E3 - O usuário omite omite o título
+>> ## Passo 3
+>> 4. O sistema devolve um erro pedindo que o usuário insira um título
+
+> E4 - O sistema não conseguiu criar a informação no banco de dados
 >> ## Passo 4
->> 5. O usuário é informado que o pedido não foi enviado
+>> 5. O sistema devolve um erro genérico informando que não foi possível realizar o gerenciamento

@@ -7,7 +7,7 @@
 > Administrador
 
 # Pré-condições
-> *Não há pré-condições*
+> O usuário não está autenticado
 
 # Pos-condições
 > 1. O usuário deve estar autenticado dentro do sistema

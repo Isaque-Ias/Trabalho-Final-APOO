@@ -24,7 +24,7 @@ Bool adicionar_resposta(Integer usuario_id, Integer questao_id)
 Bool listar_resposta(Integer usuario_id, Integer questao_id)
 Bool fazer_curso(Integer usuario_id, Bool curso)
 }
-note top of View : "Conta é uma tupla desempacotada de um objeto da classe Aluno ou da classe Administrador e uma string para determinar qual classe o objeto pertence"
-note bottom of View : "Na última operação, curso é passado como um booleano com 0 = matemática e 1 = português."
+note top of View : Conta é uma tupla desempacotada de um objeto da classe Aluno ou da classe Administrador e uma string para determinar qual classe o objeto pertence
+note bottom of View : Na última operação, curso é passado como um booleano com 0 = matemática e 1 = português.
 
 @enduml

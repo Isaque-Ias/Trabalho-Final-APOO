@@ -1,0 +1,27 @@
+@startuml
+
+participant CourseUI as course
+participant View as view
+participant AlunoDAO as aluno
+database Database as db
+
+autonumber 1.1
+course -> view : add_resposta(Integer aluno_id, Integer questao_id) : Bool
+activate view
+
+view -> aluno: add_resposta(Integer aluno_id, Integer questao_id) : Bool
+activate aluno
+
+aluno -> db : resultado: = fetch(String query) : Array | None
+activate db
+
+db --> aluno
+deactivate db
+
+aluno --> view
+deactivate aluno
+
+view --> course
+deactivate view
+
+@enduml

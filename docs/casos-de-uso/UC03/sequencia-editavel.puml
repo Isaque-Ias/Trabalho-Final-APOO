@@ -1,0 +1,41 @@
+@startuml
+
+participant AdminUI as admui
+participant View as view
+participant questaoDAO as questao
+database Database as db
+
+autonumber 1.1
+admui -> view : inserir_questao(*parametros) : Integer
+note left
+parametros = (
+String categoria,
+String titulo,
+String alternativas,
+Integer alt_correta,
+String enunciado,
+ByteString imagem,
+String imagem_mime_type,
+Integer adicionado_id
+)
+end note
+activate view
+
+view -> view : <<create>> new Questao()
+
+view -> questao: questao_id := salvar(Questao questao) : Integer
+activate questao
+
+questao -> db : resultado: = fetch(String query) : Array | None
+activate db
+
+db --> questao
+deactivate db
+
+questao --> view
+deactivate questao
+
+view --> admui
+deactivate view
+
+@enduml

@@ -1,4 +1,5 @@
 @startuml
+
 "Usuario" as user
 "Administrador" as adm
 
@@ -7,28 +8,17 @@
 "Gerenciar Administradores" as (g_adm)
 "Sair da conta" as (exit_user)
 "Gerenciar perfil" as (g_user)
-"Adicionar amizade" as (add_friend)
-"Escrever redação" as (write_r)
-"Avaliar redação" as (rate_r)
-"Relatar feedback" as (feed)
-"Gerenciar modo Beta" as (beta)
 "Fazer questão" as (m_quest)
-"Adicionar tópico" as (add_topic)
 "Criar conta" as (create_user)
 
 user --> (auth)
 user --> (exit_user)
 user --> (g_user)
-user --> (add_friend)
-user --> (write_r)
-user --> (rate_r)
-user --> (feed)
-user --> (beta)
 user --> (m_quest)
 user --> (create_user)
 adm --> (auth)
 adm --> (exit_user)
 adm --> (g_quest)
 adm --> (g_adm)
-adm --> (add_topic)
+
 @enduml

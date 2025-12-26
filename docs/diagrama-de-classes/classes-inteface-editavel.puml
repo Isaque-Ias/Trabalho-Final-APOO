@@ -1,0 +1,60 @@
+@startuml
+
+class IndexUI {
+void autenticado()
+void telas()
+void main()
+}
+
+class AdminUI {
+void main()
+void tabela_geral()
+void questoes()
+void adicionar_questao()
+void editar_questao()
+void remover_questao()
+void formulario_questao()
+void admins()
+void adicionar_admin()
+void editar_admin()
+void remover_admin()
+void formulario_admin()
+void sair()
+}
+
+class CursoUI {
+void main()
+void curso()
+void questao()
+void resultado()
+}
+
+class LoginUI {
+void main()
+}
+
+class SigninUI {
+void main()
+}
+
+class Tela404UI {
+void main()
+}
+
+class PerfilUI {
+void main()
+void perfil()
+void editar()
+void excluir()
+}
+
+note top of IndexUI : autenticado determina se o usuário é autenticado ou não.\nTelas analisa os dados da sessão para definir qual interface deverá exibir.
+
+AdminUI - IndexUI
+CursoUI - IndexUI
+LoginUI - IndexUI
+SigninUI - IndexUI
+PerfilUI - IndexUI
+Tela404UI - IndexUI
+
+@enduml

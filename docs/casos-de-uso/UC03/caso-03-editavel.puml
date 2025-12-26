@@ -1,0 +1,9 @@
+@startuml
+
+"Administrador" as adm
+
+"Gerenciar Questões" as (g_quest)
+
+adm --> (g_quest)
+
+@enduml

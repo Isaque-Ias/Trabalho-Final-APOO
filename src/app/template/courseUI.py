@@ -121,11 +121,13 @@ class CourseUI:
                 else:
                     st.session_state.screen = "result"
                     st.session_state.correct = False
+                    
                 if View.set_course_progress(st.session_state.usuario_id, st.session_state.question_value):
                     st.rerun()
                 else:
                     st.warning("Erro no sistema...")
 
+    @staticmethod
     def result():
         result_value = st.session_state.correct
         if result_value:

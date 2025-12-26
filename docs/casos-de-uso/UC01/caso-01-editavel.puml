@@ -1,0 +1,9 @@
+@startuml
+
+"Usuario" as user
+
+"Autenticar" as (auth)
+
+user --> (auth)
+
+@enduml
