@@ -2,7 +2,7 @@ import bcrypt
 from models.dao import DAO
 
 class Usuario:
-    def __init__(self, id, nome, email, senha, mat, pt, desc="", pic="", pic_mime="", beta=False):
+    def __init__(self, id, nome, email, senha, mat, pt, desc="", pic="", pic_mime=""):
         self.set_id(id)
         self.set_nome(nome)
         self.set_email(email)
@@ -14,7 +14,7 @@ class Usuario:
         self.set_pic_mime(pic_mime)
 
     def __str__(self):
-        return f"{self.__id}-{self.__nome}-{self.__email}-{self.__senha}-{self.__desc}-{self.__mat}-{self.__pt}-{self.__xp_mat}-{self.__xp_pt}-{self.__beta}-{self.__pic}-{self.__pic_mime}"
+        return f"{self.__id}-{self.__nome}-{self.__email}-{self.__senha}-{self.__desc}-{self.__mat}-{self.__pt}-{self.__pic}-{self.__pic_mime}"
 
     def get_id(self): return self.__id
     def get_nome(self): return self.__nome
@@ -38,7 +38,7 @@ class Usuario:
         if isinstance(senha, bytes):
             self.__senha = senha
             return
-        self.__senha = bcrypt.hashpw(senha.encode(), bcrypt.gensalt())
+        self.__senha = bcrypt.hashpw(str(senha).encode(), bcrypt.gensalt())
     def set_mat(self, mat):
         self.__mat = mat
     def set_pt(self, pt):

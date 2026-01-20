@@ -161,9 +161,9 @@ class View:
         return success
 
     @staticmethod
-    def editar_usuario_id(id, nome, email, senha, matematica, portugues, xp_mat, xp_pt, descricao, picture, mime_type, beta):
-        u = Usuario(id, nome, senha, matematica, portugues, xp_mat, xp_pt, descricao, picture, mime_type, beta)
-        success = UsuarioDAO.edit_id(id, u, email)
+    def editar_usuario_id(id, nome, email, senha, matematica, portugues, descricao, picture, mime_type):
+        u = Usuario(id, nome, email, senha, matematica, portugues, descricao, picture, mime_type)
+        success = UsuarioDAO.edit_id(id, u)
         return success
 
     @staticmethod

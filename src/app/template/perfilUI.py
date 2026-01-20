@@ -113,28 +113,21 @@ class PerfilUI:
                 image.save(buffer, format=image.format)
                 blob_image = buffer.getvalue()
                 final_image = base64.b64encode(blob_image).decode("utf-8")
-            email = View.user_email(st.session_state.usuario_id)
             nome_in_system = View.usuario_listar_nome(nome)
             if nome_in_system == None or nome_in_system.get_id() == cls.usuario.get_id():
-                if email == None:
-                    st.error("Email indisponível")
+                if View.editar_usuario_id(st.session_state.usuario_id,
+                                    nome,
+                                    cls.usuario.get_email(),
+                                    cls.usuario.get_senha(),
+                                    cls.usuario.get_mat(),
+                                    cls.usuario.get_pt(),
+                                    descricao,
+                                    final_image,
+                                    mime_type
+                                    ):
+                    st.success("Dados atualizados!")
                 else:
-                    if View.editar_usuario_id(st.session_state.usuario_id,
-                                        nome,
-                                        email.get_email(),
-                                        cls.usuario.get_senha(),
-                                        cls.usuario.get_mat(),
-                                        cls.usuario.get_pt(),
-                                        cls.usuario.get_xp_mat(),
-                                        cls.usuario.get_xp_pt(),
-                                        descricao,
-                                        final_image,
-                                        mime_type,
-                                        cls.usuario.get_beta()
-                                        ):
-                        st.success("Dados atualizados!")
-                    else:
-                        st.error("Usuário não foi adicioando")
+                    st.error("Usuário não foi adicioando")
             else:
                 st.warning("Nome já está em uso")
         
